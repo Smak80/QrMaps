@@ -16,6 +16,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -55,6 +56,9 @@ fun ListPage(
                 TrackCard(
                     it,
                     modifier = Modifier.fillMaxWidth(),
+                    onQrClick = {
+
+                    },
                     onClick = onSelectTrack
                 )
             }
@@ -67,6 +71,7 @@ fun ListPage(
 fun TrackCard(
     trackInfo: ExtendedTrackInfo,
     modifier: Modifier = Modifier,
+    onQrClick: (ExtendedTrackInfo)->Unit = {},
     onClick: (ExtendedTrackInfo)->Unit = {},
 ) {
     ElevatedCard(
@@ -144,10 +149,18 @@ fun TrackCard(
                     }
                 }
                 FilledIconButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.minimumInteractiveComponentSize()
+                    onClick = { onQrClick(trackInfo) },
+                    modifier = Modifier.minimumInteractiveComponentSize(),
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    )
                 ) {
-
+                    Icon(
+                        painter = painterResource(id = R.drawable.twotone_qr_code_2_24),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
                 }
             }
         }
