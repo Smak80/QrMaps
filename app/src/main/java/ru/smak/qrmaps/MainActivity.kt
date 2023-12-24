@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
                         when (mvm.currentPage){
                             Navigation.LIST -> {
                                 ListPage(
-                                    tlvm.tracks.collectAsState(initial = listOf()).value,
+                                    tlvm.tracks.collectAsState(initial = listOf()).value.reversed(),
                                     modifier = Modifier.fillMaxSize(),
                                 ) {
 

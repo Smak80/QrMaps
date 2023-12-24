@@ -14,12 +14,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -81,6 +85,12 @@ fun TrackCard(
                 Text(text = trackInfo.id.toString(),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(id = R.drawable.twotone_map_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
             Divider(
                 modifier = Modifier.fillMaxWidth(),
@@ -88,24 +98,57 @@ fun TrackCard(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically){
-                Text(text = stringResource(R.string.start),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold)
-                Text(text = trackInfo.started?.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))
-                    ?: stringResource(id = R.string.no_time),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Normal)
-            }
-            Row(modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically){
-                Text(text = stringResource(R.string.finish),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold)
-                Text(text = trackInfo.finished?.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))
-                    ?: stringResource(R.string.no_time),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Normal)
+                verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.start),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = trackInfo.started?.format(
+                                DateTimeFormatter.ofLocalizedDateTime(
+                                    FormatStyle.SHORT
+                                )
+                            )
+                                ?: stringResource(id = R.string.no_time),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.finish),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = trackInfo.finished?.format(
+                                DateTimeFormatter.ofLocalizedDateTime(
+                                    FormatStyle.SHORT
+                                )
+                            )
+                                ?: stringResource(R.string.no_time),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                    }
+                }
+                FilledIconButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier.minimumInteractiveComponentSize()
+                ) {
+
+                }
             }
         }
     }

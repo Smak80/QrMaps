@@ -38,8 +38,8 @@ object LocationDb{
                 ExtendedTrackInfo(
                     id = track.id,
                     owner = track.owner,
-                    started = path.first().time?.let {LocalDateTime.ofEpochSecond(it, 0, ZoneOffset.UTC) },
-                    finished = path.last().time?.let {LocalDateTime.ofEpochSecond(it, 0, ZoneOffset.UTC) },
+                    started = path.first().time?.let {LocalDateTime.ofEpochSecond(it / 1000, (it % 1000).toInt(), ZoneOffset.UTC) },
+                    finished = path.last().time?.let {LocalDateTime.ofEpochSecond(it / 1000, (it % 1000).toInt(), ZoneOffset.UTC) },
                     length = path.fold(0f){ acc, loc ->
                         var dist: Float
                         prevLoc = Location(prevLoc).apply {
