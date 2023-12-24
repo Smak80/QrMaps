@@ -13,12 +13,12 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 class QrCreator {
-    fun create(data: String): Bitmap{
+    suspend fun create(data: String): Bitmap{
         val qr = QrCode.encodeText(data, QrCode.Ecc.MEDIUM)
         return toImage(qr, 5, 5)
     }
 
-    fun saveToFile(context: Context, image: Bitmap) {
+    suspend fun saveToFile(context: Context, image: Bitmap) {
         val bos = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 0, bos)
         File(context.cacheDir, "qr-${LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)}.png").also { file ->
@@ -31,7 +31,7 @@ class QrCreator {
         }
     }
 
-    private fun toImage(
+    private suspend fun toImage(
         qr: QrCode,
         scale: Int,
         border: Int,

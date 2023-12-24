@@ -4,11 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.graphics.Bitmap
 import android.location.Location
-import android.net.Uri
 import android.os.Looper
-import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.getValue
@@ -19,10 +16,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationServices
 import com.yandex.mapkit.geometry.Point
-import io.nayuki.qrcodegen.QrCode
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.smak.qrmaps.locating.Locator
 import ru.smak.qrmaps.permissions.LocationPermissionRegister
@@ -103,12 +97,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun createQr() {
         if (path.isNotEmpty()) {
-            viewModelScope.launch {
-                path.joinToString(
-                    separator = "\n"
-                ) { "${it.latitude};${it.longitude}" }.let {
-                    Log.d("QR", it)
-                    val qrCreator = QrCreator().run{
+            path.joinToString(
+                separator = "\n"
+            ) { "${it.latitude};${it.longitude}" }.let {
+                Log.d("QR", it)
+                viewModelScope.launch {
+                    QrCreator().run {
                         val bmp = create(it)
                         saveToFile(getApplication<Application>().applicationContext, bmp)
                     }
