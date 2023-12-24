@@ -4,9 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,24 +17,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
 import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.geometry.Point
+import ru.smak.qrmaps.ui.MainPage
 import ru.smak.qrmaps.ui.theme.QrMapsTheme
-import ru.smak.qrmaps.ui.theme.YaMap
-import ru.smak.qrmaps.ui.theme.navigation.Navigation
+import ru.smak.qrmaps.ui.TrackPage
+import ru.smak.qrmaps.ui.navigation.Navigation
 import ru.smak.qrmaps.viewmodels.MainViewModel
 
 class MainActivity : ComponentActivity() {
@@ -64,8 +53,8 @@ class MainActivity : ComponentActivity() {
                         }
                     ){
                         when (mvm.currentPage){
-                            Navigation.MAIN -> { MainPage(mvm.path, modifier = Modifier.fillMaxSize()) }
-                            Navigation.OTHER -> {  }
+                            Navigation.MAIN -> { MainPage(modifier = Modifier.fillMaxSize()) }
+                            Navigation.TRACK -> { TrackPage(mvm.path, modifier = Modifier.fillMaxSize()) }
                         }
                     }
                 }
@@ -130,33 +119,6 @@ fun MainUi(
         }
     }
 }
-
-@Composable
-fun MainPage(
-    path: List<Point>,
-    modifier: Modifier = Modifier,
-) {
-    var offset: Offset by remember { mutableStateOf(Offset.Zero) }
-    var size: Offset by remember { mutableStateOf(Offset.Zero) }
-    Column(modifier = modifier) {
-        YaMap(
-            offset,
-            size,
-            Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .onGloballyPositioned {
-                    offset = it.positionInRoot()
-                    size = if (it.size == IntSize.Zero)
-                        Offset(1f, 1f)
-                    else
-                        Offset(it.size.width.toFloat(), it.size.height.toFloat())
-                },
-            path
-        )
-    }
-}
-
 
 @Preview(locale = "ru")
 @Composable

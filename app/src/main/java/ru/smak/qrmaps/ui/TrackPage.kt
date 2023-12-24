@@ -1,14 +1,23 @@
-package ru.smak.qrmaps.ui.theme
+package ru.smak.qrmaps.ui
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.yandex.mapkit.ScreenPoint
@@ -19,6 +28,32 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.geometry.Polyline
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
+
+@Composable
+fun TrackPage(
+    path: List<Point>,
+    modifier: Modifier = Modifier,
+) {
+    var offset: Offset by remember { mutableStateOf(Offset.Zero) }
+    var size: Offset by remember { mutableStateOf(Offset.Zero) }
+    Column(modifier = modifier) {
+        YaMap(
+            offset,
+            size,
+            Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .onGloballyPositioned {
+                    offset = it.positionInRoot()
+                    size = if (it.size == IntSize.Zero)
+                        Offset(1f, 1f)
+                    else
+                        Offset(it.size.width.toFloat(), it.size.height.toFloat())
+                },
+            path
+        )
+    }
+}
 
 @Composable
 fun YaMap(

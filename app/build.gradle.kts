@@ -67,6 +67,9 @@ dependencies {
     implementation("io.nayuki:qrcodegen:1.8.0")
     implementation ("com.yandex.android:maps.mobile:4.4.0-lite")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

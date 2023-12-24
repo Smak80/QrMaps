@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import ru.smak.qrmaps.locating.Locator
 import ru.smak.qrmaps.permissions.LocationPermissionRegister
 import ru.smak.qrmaps.qrcode.QrCreator
-import ru.smak.qrmaps.ui.theme.navigation.Navigation
+import ru.smak.qrmaps.ui.navigation.Navigation
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
