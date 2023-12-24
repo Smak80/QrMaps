@@ -2,10 +2,15 @@ package ru.smak.qrmaps
 
 import android.app.Application
 import com.yandex.mapkit.MapKitFactory
+import ru.smak.qrmaps.database.LocationDb
 
-object QrMaps : Application() {
-    init{
+class QrMaps : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        LocationDb.init(applicationContext)
         MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
-        MapKitFactory.initialize(this)
+        MapKitFactory.initialize(applicationContext)
     }
+
 }

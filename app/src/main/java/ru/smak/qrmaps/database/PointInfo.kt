@@ -34,7 +34,7 @@ data class PointInfo(
     var speed: Float? = null,
 
     @ColumnInfo(name="alt")
-    var altitude: Float? = null,
+    var altitude: Double? = null,
 
     @ColumnInfo(name="bea")
     var bearing: Float? = null,

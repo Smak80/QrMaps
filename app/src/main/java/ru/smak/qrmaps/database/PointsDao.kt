@@ -10,6 +10,6 @@ interface PointsDao {
     @Insert(entity = PointInfo::class)
     suspend fun insertLocation(point: PointInfo)
 
-    @Query("select * FROM ${ALocatorDatabase.TRACK_CONTENT_TABLE} WHERE track=:trackId")
-    fun getPath(trackId: Long): Flow<List<PointInfo>>
+    @Query("SELECT * FROM ${ALocatorDatabase.TRACK_CONTENT_TABLE} WHERE track=:trackId ORDER BY TIME")
+    suspend fun getPath(trackId: Long): List<PointInfo>
 }

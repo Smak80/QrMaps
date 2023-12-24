@@ -1,8 +1,6 @@
 package ru.smak.qrmaps.database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
@@ -17,30 +15,4 @@ abstract class ALocatorDatabase : RoomDatabase(){
 
     abstract fun getTrackDao(): TrackDao
     abstract fun getPathDao(): PointsDao
-}
-
-object LocationDatabase{
-
-    private lateinit var tracks: TrackDao
-    private lateinit var paths: PointsDao
-
-    fun getTracks(applicationContext: Context): TrackDao {
-        if (!::tracks.isInitialized)
-            tracks = Room.databaseBuilder(
-                applicationContext,
-                ALocatorDatabase::class.java,
-                ALocatorDatabase.DB_NAME,
-            ).build().getTrackDao()
-        return tracks
-    }
-
-    fun getPaths(applicationContext: Context): PointsDao {
-        if (!::paths.isInitialized)
-            paths = Room.databaseBuilder(
-                applicationContext,
-                ALocatorDatabase::class.java,
-                ALocatorDatabase.DB_NAME,
-            ).build().getPathDao()
-        return paths
-    }
 }

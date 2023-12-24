@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">QrMaps</string>
+    <string name="track_num_lbl">"Track No: "</string>
+    <string name="start">"Started: "</string>
+    <string name="no_time">-</string>
+    <string name="finish">"Finished: "</string>
 </resources>

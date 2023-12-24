@@ -17,27 +17,30 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.yandex.mapkit.MapKitFactory
-import ru.smak.qrmaps.ui.MainPage
+import ru.smak.qrmaps.ui.ListPage
 import ru.smak.qrmaps.ui.theme.QrMapsTheme
 import ru.smak.qrmaps.ui.TrackPage
 import ru.smak.qrmaps.ui.navigation.Navigation
 import ru.smak.qrmaps.viewmodels.MainViewModel
+import ru.smak.qrmaps.viewmodels.TrackListViewModel
+import ru.smak.qrmaps.viewmodels.TrackMapViewModel
 
 class MainActivity : ComponentActivity() {
 
+    private val tmvm: TrackMapViewModel by viewModels()
+    private val tlvm: TrackListViewModel by viewModels()
     private val mvm: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
-        MapKitFactory.initialize(this)
 
-        mvm.registerPermissionRequester(this)
+        tmvm.registerPermissionRequester(this)
 
         setContent {
             QrMapsTheme {
@@ -47,14 +50,30 @@ class MainActivity : ComponentActivity() {
                 ) {
                     MainUi(
                         Modifier.fillMaxSize(),
-                        trackingOn = mvm.trackingOn,
+                        trackingOn = tmvm.trackingOn,
                         onTrackingClick = {
-                            mvm.changeTrackingState(this)
+                            tmvm.changeTrackingState(this)
+                            mvm.currentPage = if (tmvm.trackingOn)
+                                Navigation.TRACK
+                            else
+                                Navigation.LIST
                         }
                     ){
                         when (mvm.currentPage){
-                            Navigation.MAIN -> { MainPage(modifier = Modifier.fillMaxSize()) }
-                            Navigation.TRACK -> { TrackPage(mvm.path, modifier = Modifier.fillMaxSize()) }
+                            Navigation.LIST -> {
+                                ListPage(
+                                    tlvm.tracks.collectAsState(initial = listOf()).value,
+                                    modifier = Modifier.fillMaxSize(),
+                                ) {
+
+                                }
+                            }
+                            Navigation.TRACK -> {
+                                TrackPage(
+                                    tmvm.path,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
                         }
                     }
                 }

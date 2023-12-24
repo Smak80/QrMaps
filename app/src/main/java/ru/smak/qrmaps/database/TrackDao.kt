@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TrackDao {
     @Insert(entity = Track::class)
-    suspend fun insertNewTrack(track: Track)
+    suspend fun insertNewTrack(track: Track): Long
 
     @Update(entity = Track::class)
     suspend fun updateTrack(track: Track)
@@ -22,5 +22,5 @@ interface TrackDao {
     fun getTrack(id: Long): Track
 
     @Query("select * from ${ALocatorDatabase.TRACK_TABLE}")
-    fun getAllTracks(id: Long): Flow<List<Track>>
+    fun getAllTracks(): Flow<List<Track>>
 }

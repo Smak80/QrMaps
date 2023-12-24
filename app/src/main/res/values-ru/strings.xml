@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">QR-карты</string>
+    <string name="track_num_lbl">"Трек №: "</string>
+    <string name="start">"Начат: "</string>
+    <string name="no_time">-</string>
+    <string name="finish">"Завершен: "</string>
 </resources>
