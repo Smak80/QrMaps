@@ -31,7 +31,7 @@ import com.yandex.runtime.image.ImageProvider
 
 @Composable
 fun TrackPage(
-    path: List<Point>,
+    path: List<Pair<Double, Double>>,
     modifier: Modifier = Modifier,
 ) {
     var offset: Offset by remember { mutableStateOf(Offset.Zero) }
@@ -50,7 +50,7 @@ fun TrackPage(
                     else
                         Offset(it.size.width.toFloat(), it.size.height.toFloat())
                 },
-            path
+            path,
         )
     }
 }
@@ -60,21 +60,22 @@ fun YaMap(
     topLeftOffset: Offset,
     bottomRightOffset: Offset,
     modifier: Modifier = Modifier,
-    path: List<Point> = listOf()
+    path: List<Pair<Double, Double>> = listOf(),
 ){
     val density = LocalDensity.current.run{ 1.dp.toPx() }
+    val pathPoint = path.map { Point(it.first, it.second) }
     Box(modifier = modifier) {
         AndroidView(
             factory = {
                 MapView(it).apply {
                     if (path.isNotEmpty()) {
-                        mapWindow.map.mapObjects.addCircle(Circle(path.last(), 5f))
+                        mapWindow.map.mapObjects.addCircle(Circle(pathPoint.last(), 5f))
                     }
                 }
             },
             update = { mapView ->
                 mapView.setFocusRect(topLeftOffset, bottomRightOffset, 32*density)
-                mapView.createPath(path, (16*density).toInt())
+                mapView.createPath(pathPoint, (16*density).toInt())
             })
     }
 }

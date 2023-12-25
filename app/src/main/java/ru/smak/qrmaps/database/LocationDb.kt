@@ -31,30 +31,48 @@ object LocationDb{
         return tracksDao.getAllTracks().map { list ->
             list.map { track ->
                 val path = pointsDao.getPath(track.id)
-                var prevLoc = Location("").apply {
-                    latitude = path.first().latitude
-                    longitude = path.first().longitude
-                }
-                ExtendedTrackInfo(
-                    id = track.id,
-                    owner = track.owner,
-                    started = path.first().time?.let {LocalDateTime.ofEpochSecond(it / 1000, (it % 1000).toInt(), ZoneOffset.UTC) },
-                    finished = path.last().time?.let {LocalDateTime.ofEpochSecond(it / 1000, (it % 1000).toInt(), ZoneOffset.UTC) },
-                    length = path.fold(0f){ acc, loc ->
-                        var dist: Float
-                        prevLoc = Location(prevLoc).apply {
-                            latitude = loc.latitude
-                            longitude = loc.longitude
-                            dist = distanceTo(prevLoc)
-                        }
-                        acc + dist
+                if (path.isNotEmpty()) {
+                    var prevLoc = Location("").apply {
+                        latitude = path.first().latitude
+                        longitude = path.first().longitude
                     }
-                )
+                    ExtendedTrackInfo(
+                        id = track.id,
+                        owner = track.owner,
+                        started = path.first().time?.let {
+                            LocalDateTime.ofEpochSecond(
+                                it / 1000,
+                                (it % 1000).toInt(),
+                                ZoneOffset.UTC
+                            )
+                        },
+                        finished = path.last().time?.let {
+                            LocalDateTime.ofEpochSecond(
+                                it / 1000,
+                                (it % 1000).toInt(),
+                                ZoneOffset.UTC
+                            )
+                        },
+                        length = path.fold(0f) { acc, loc ->
+                            var dist: Float
+                            prevLoc = Location(prevLoc).apply {
+                                latitude = loc.latitude
+                                longitude = loc.longitude
+                                dist = distanceTo(prevLoc)
+                            }
+                            acc + dist
+                        }
+                    )
+                } else {
+                    ExtendedTrackInfo(track.id, track.owner)
+                }
             }
         }
     }
 
-    suspend fun createNewTrack() = tracksDao.insertNewTrack(Track())
+    suspend fun createNewTrack(owner: Boolean = true) =
+        tracksDao.insertNewTrack(Track(owner = owner))
+
     suspend fun addPoint(trackId: Long, location: Location) {
         PointInfo(
             id = 0,
@@ -69,4 +87,29 @@ object LocationDb{
             pointsDao.insertLocation(it)
         }
     }
+
+    suspend fun getPointsForTrack(trackId: Long):
+            List<Pair<Double, Double>> = pointsDao.getPath(trackId).map {
+        it.latitude to it.longitude
+    }
+
+    fun List<Pair<Double, Double>>.asString() = if (isNotEmpty()) {
+        joinToString(separator = "\n") {
+            "${it.first};${it.second}"
+        }
+    } else ""
+
+    suspend fun saveAllPointsToTrack(trackId: Long, points: List<Pair<Double, Double>>) {
+        points.forEach {
+            PointInfo(
+                id = 0,
+                track = trackId,
+                latitude = it.first,
+                longitude = it.second
+            ).also {
+                pointsDao.insertLocation(it)
+            }
+        }
+    }
+
 }

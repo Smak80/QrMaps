@@ -4,9 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.graphics.Bitmap
 import android.location.Location
 import android.os.Looper
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,20 +15,19 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationServices
-import com.yandex.mapkit.geometry.Point
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.smak.qrmaps.database.LocationDb
-import ru.smak.qrmaps.database.Track
+import ru.smak.qrmaps.database.LocationDb.asString
 import ru.smak.qrmaps.locating.Locator
 import ru.smak.qrmaps.permissions.LocationPermissionRegister
 import ru.smak.qrmaps.qrcode.QrCreator
 
 class TrackMapViewModel(app: Application) : AndroidViewModel(app) {
 
-    val path: SnapshotStateList<Point> = SnapshotStateList()
+    val trackPoints: SnapshotStateList<Pair<Double, Double>> = SnapshotStateList()
 
-    private var activeTrackId: Long? = null
+    var activeTrackId: Long? = null
 
     private val locationPermissions: LocationPermissionRegister = LocationPermissionRegister()
 
@@ -57,19 +56,18 @@ class TrackMapViewModel(app: Application) : AndroidViewModel(app) {
         locationPermissions.launchIfNeeded(activity)
     }
 
-    private fun createQr() {
-        if (path.isNotEmpty()) {
-            path.joinToString(
-                separator = "\n"
-            ) { "${it.latitude};${it.longitude}" }.let {
-                Log.d("QR", it)
-                viewModelScope.launch {
-                    QrCreator().run {
-                        val bmp = create(it)
-                        saveToFile(getApplication<Application>().applicationContext, bmp)
-                    }
-                }
-            }
+    fun createQr(trackId: Long? = activeTrackId, onImageReady: (Bitmap?)->Unit = {}) {
+        viewModelScope.launch {
+            onImageReady(trackId?.let {
+                val track = LocationDb.getPointsForTrack(it).asString()
+                QrCreator.create(track)
+            })
+        }
+    }
+
+    private fun saveQr(qr: Bitmap){
+        viewModelScope.launch {
+            QrCreator.saveToFile(getApplication<Application>().applicationContext, qr)
         }
     }
 
@@ -89,6 +87,7 @@ class TrackMapViewModel(app: Application) : AndroidViewModel(app) {
         if (locationPermissions.isLocationPermissionsGranted(context)) {
             fusedLocationClient.lastLocation.addOnCompleteListener {
                 viewModelScope.launch {
+                    trackPoints.clear()
                     activeTrackId = LocationDb.createNewTrack()
                     fusedLocationClient.requestLocationUpdates(
                         Locator.locationRequest,
@@ -112,14 +111,45 @@ class TrackMapViewModel(app: Application) : AndroidViewModel(app) {
                     LocationDb.addPoint(trackId, it)
                 }
             }
-            path.add(Point(it.latitude, it.longitude))
+            trackPoints.add(it.latitude to it.longitude)
         }
     }
 
     private fun stopLocationUpdates() {
         updJob?.cancel()
-        activeTrackId = null
         fusedLocationClient.removeLocationUpdates(Locator.locationCallback)
-        createQr()
+        activeTrackId?.let{ trackId ->
+            createQr(trackId){ result ->
+                result?.let{ bmp ->
+                    saveQr(bmp)
+                }
+            }
+        }
+        activeTrackId = null
+    }
+
+    fun createTrackFromQr(points: List<Pair<Double, Double>>){
+        if (points.isNotEmpty()) {
+            viewModelScope.launch {
+                activeTrackId = LocationDb.createNewTrack()
+                activeTrackId?.let { trackId ->
+                    trackPoints.apply {
+                        clear()
+                        addAll(points)
+                        LocationDb.saveAllPointsToTrack(trackId, points)
+                    }
+                }
+            }
+        }
+    }
+
+    fun loadTrack(trackId: Long) {
+        activeTrackId = trackId
+        viewModelScope.launch {
+            trackPoints.apply {
+                clear()
+                addAll(LocationDb.getPointsForTrack(trackId))
+            }
+        }
     }
 }

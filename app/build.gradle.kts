@@ -65,12 +65,19 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.1.2")
 
-    implementation("io.nayuki:qrcodegen:1.8.0")
+    // Яндекс-карты
     implementation ("com.yandex.android:maps.mobile:4.4.0-lite")
+    // MVVM в Composable
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    // Бахы данных Room
     implementation("androidx.room:room-runtime:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+    // Генерация QR-кодов
+    implementation("io.nayuki:qrcodegen:1.8.0")
+    // Сканирование QR-кодов
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+    implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

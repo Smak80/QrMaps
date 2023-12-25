@@ -41,6 +41,7 @@ import java.time.format.FormatStyle
 fun ListPage(
     tracks: List<ExtendedTrackInfo>,
     modifier: Modifier = Modifier,
+    onQrRequest: (ExtendedTrackInfo)->Unit = {},
     onSelectTrack: (ExtendedTrackInfo)->Unit = {},
 ){
     Surface(
@@ -56,9 +57,7 @@ fun ListPage(
                 TrackCard(
                     it,
                     modifier = Modifier.fillMaxWidth(),
-                    onQrClick = {
-
-                    },
+                    onQrClick = onQrRequest,
                     onClick = onSelectTrack
                 )
             }
@@ -99,7 +98,8 @@ fun TrackCard(
             }
             Divider(
                 modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.tertiary
             )
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(),
@@ -148,20 +148,7 @@ fun TrackCard(
                         )
                     }
                 }
-                FilledIconButton(
-                    onClick = { onQrClick(trackInfo) },
-                    modifier = Modifier.minimumInteractiveComponentSize(),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    )
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.twotone_qr_code_2_24),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-                }
+                QrButton(onClick = { onQrClick(trackInfo) })
             }
         }
     }
