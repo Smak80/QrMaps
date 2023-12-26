@@ -3,6 +3,7 @@ package ru.smak.qrmaps.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -20,6 +21,7 @@ data class PointInfo(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
 
+    @ColumnInfo(index = true)
     var track: Long,
 
     var time: Long? = null,

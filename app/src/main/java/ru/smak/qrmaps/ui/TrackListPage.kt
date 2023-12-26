@@ -85,10 +85,14 @@ fun TrackCard(
                 verticalAlignment = Alignment.CenterVertically){
                 Text(text = stringResource(R.string.track_num_lbl),
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold)
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
+                )
                 Text(text = trackInfo.id.toString(),
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold)
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.twotone_map_24),
@@ -107,24 +111,58 @@ fun TrackCard(
                 Column(modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.start),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = trackInfo.started?.format(
-                                DateTimeFormatter.ofLocalizedDateTime(
-                                    FormatStyle.SHORT
-                                )
+                    if (trackInfo.owner) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(R.string.start),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1
                             )
-                                ?: stringResource(id = R.string.no_time),
+                            Text(
+                                text = trackInfo.started?.format(
+                                    DateTimeFormatter.ofLocalizedDateTime(
+                                        FormatStyle.SHORT
+                                    )
+                                )
+                                    ?: stringResource(id = R.string.no_time),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Normal,
+                                maxLines = 1
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(R.string.finish),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1
+                            )
+                            Text(
+                                text = trackInfo.finished?.format(
+                                    DateTimeFormatter.ofLocalizedDateTime(
+                                        FormatStyle.SHORT
+                                    )
+                                )
+                                    ?: stringResource(R.string.no_time),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Normal,
+                                maxLines = 1
+                            )
+
+                        }
+                    } else {
+                        Text(
+                            text = stringResource(R.string.imported_path),
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Normal
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
                         )
                     }
                     Row(
@@ -132,20 +170,18 @@ fun TrackCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = stringResource(R.string.finish),
+                            text = stringResource(R.string.path_length),
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
                         )
                         Text(
-                            text = trackInfo.finished?.format(
-                                DateTimeFormatter.ofLocalizedDateTime(
-                                    FormatStyle.SHORT
-                                )
-                            )
-                                ?: stringResource(R.string.no_time),
+                            text = trackInfo.length.toString(),
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Normal
+                            fontWeight = FontWeight.Normal,
+                            maxLines = 1
                         )
+
                     }
                 }
                 QrButton(onClick = { onQrClick(trackInfo) })
@@ -158,8 +194,8 @@ fun TrackCard(
 @Composable
 fun MainPagePreview(){
     val tracks = listOf(
-        ExtendedTrackInfo(1, true, LocalDateTime.now(), LocalDateTime.now()),
-        ExtendedTrackInfo(2, false, LocalDateTime.now(), LocalDateTime.now()),
+        ExtendedTrackInfo(1, true, LocalDateTime.now(), LocalDateTime.now(), 234f),
+        ExtendedTrackInfo(2, false, LocalDateTime.now(), LocalDateTime.now(), 13453f),
         ExtendedTrackInfo(3, true, LocalDateTime.now(), LocalDateTime.now()),
     ).reversed()
     QrMapsTheme {

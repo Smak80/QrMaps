@@ -131,7 +131,7 @@ class TrackMapViewModel(app: Application) : AndroidViewModel(app) {
     fun createTrackFromQr(points: List<Pair<Double, Double>>){
         if (points.isNotEmpty()) {
             viewModelScope.launch {
-                activeTrackId = LocationDb.createNewTrack()
+                activeTrackId = LocationDb.createNewTrack(false)
                 activeTrackId?.let { trackId ->
                     trackPoints.apply {
                         clear()

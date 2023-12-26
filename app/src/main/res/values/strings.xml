@@ -4,4 +4,6 @@
     <string name="start">"Started: "</string>
     <string name="no_time">-</string>
     <string name="finish">"Finished: "</string>
+    <string name="path_length">"Path length (m): "</string>
+    <string name="imported_path">-Imported track-</string>
 </resources>

@@ -57,6 +57,7 @@ android {
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.10.01"))
@@ -78,6 +79,8 @@ dependencies {
     // Сканирование QR-кодов
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+    // Проверка доступности модуля сканирования QR-кодов
+    implementation("com.google.android.gms:play-services-base:18.2.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

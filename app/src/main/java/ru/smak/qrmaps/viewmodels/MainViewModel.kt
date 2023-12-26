@@ -5,6 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import com.google.android.gms.common.moduleinstall.ModuleInstall
+import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import ru.smak.qrmaps.ui.navigation.Navigation
 
@@ -12,7 +14,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var currentPage: Navigation by mutableStateOf(Navigation.LIST)
 
     private val qrScanner by lazy{
-        GmsBarcodeScanning.getClient(getApplication<Application>().applicationContext)
+        GmsBarcodeScanning.getClient(app.applicationContext)
     }
 
     fun loadQr(onLoad: (List<Pair<Double, Double>>)->Unit) {

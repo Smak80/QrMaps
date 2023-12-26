@@ -5,4 +5,6 @@
     <string name="start">"Начат: "</string>
     <string name="no_time">-</string>
     <string name="finish">"Завершен: "</string>
+    <string name="path_length">"Длина пути (м): "</string>
+    <string name="imported_path">-Трек импортирован-</string>
 </resources>
