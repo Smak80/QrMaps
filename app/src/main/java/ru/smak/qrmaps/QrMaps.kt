@@ -20,17 +20,17 @@ class QrMaps : Application() {
         MapKitFactory.initialize(applicationContext)
 
         val qrScanner = GmsBarcodeScanning.getClient(applicationContext)
-//        val moduleInstallRequest = ModuleInstallRequest.newBuilder()
-//            .addApi(qrScanner)
-//            .build()
+        val moduleInstallRequest = ModuleInstallRequest.newBuilder()
+            .addApi(qrScanner)
+            .build()
 
         moduleInstallClient
             .areModulesAvailable(qrScanner)
             .addOnSuccessListener {
                 if (!it.areModulesAvailable()) {
                     moduleInstallClient
-                        .deferredInstall(qrScanner)
-                    //    .installModules(moduleInstallRequest)
+                        //.deferredInstall(qrScanner)
+                        .installModules(moduleInstallRequest)
                 }
             }
     }
